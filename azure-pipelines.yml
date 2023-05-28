@@ -27,10 +27,11 @@ steps:
     tags: '1.0.2'
 
 - task: KubernetesManifest@0
+  displayName: 'Deploy to GKE'
   inputs:
     action: 'deploy'
     kubernetesServiceConnection: 'gke-development'
-    manifests: 
+    manifests: |
         k8s/simple/backend-deployment.yaml
         k8s/simple/service-backend-lb.
         
