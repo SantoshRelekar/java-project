@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment                                          # 1
+metadata:
+  name: coit-backend1
+  labels:
+    app: coit-backend1
+    runon: fargate
+spec:
+  selector:
+    matchLabels:
+      app: coit-backend1
+  replicas: 3                                             # 2
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate                                   # 3
+    rollingUpdate: 
+      maxUnavailable: 1                                   # 4
+      maxSurge: 1                                         # 5
+  template:
+    metadata:
+      labels:
+        runon: fargate
+        app: coit-backend1                                  # 6
+        app.kubernetes.io/name: coit-backend1
+    spec:
+      containers:
+        - image: coitlearningdemo/coit-backend1:latest
+          imagePullPolicy: IfNotPresent                         # 7
+          name: coit-backend1
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DATABASE_NAME
+              value: mydb
