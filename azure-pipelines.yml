@@ -18,6 +18,28 @@ steps:
 - script: |
     mvn install
   displayName: 'packaging java application'
+
+- script: |
+   sudo apt-get install wget apt-transport-https gnupg lsb-release
+   wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+   echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+   sudo apt-get update
+   sudo apt-get install trivy
+  displayName: 'Install trivy'
+
+- script: |
+   trivy config Dockerfile
+  displayName: 'Scan the docker file for security'
+
+- script: |
+   BASE_IMAGE=`grep FROM Dockerfile | awk '{print $2}'`
+   trivy image $BASE_IMAGE 
+  displayName: 'Scanning the base image'
+
+- script: |
+   trivy config k8s
+  displayName: 'Scanning kuberenetes manifest'
+
 - task: Docker@2
   inputs:
     containerRegistry: 'docker-hub'
