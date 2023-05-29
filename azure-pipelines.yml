@@ -55,5 +55,5 @@ steps:
     kubernetesServiceConnection: 'gke-development'
     manifests: |
         k8s/simple/backend-deployment.yaml
-        k8s/simple/service-backend-lb.
+        k8s/simple/service-backend-lb.yaml
         
